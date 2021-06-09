@@ -4,6 +4,7 @@ using HarmonyLib;
 using I2.Loc;
 using Oc;
 using Oc.Item;
+using UnityEngine;
 
 namespace BetterRefin
 {
