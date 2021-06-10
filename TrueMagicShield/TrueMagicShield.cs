@@ -36,14 +36,14 @@ namespace TrueMagicShield
 		{
 			public static void Prefix(OcHealthPl __instance, OcRestoreMsg restoreMsg)
 			{
-				OcPl pl = (OcPl)Traverse.Create(__instance).Field("_Pl").GetValue();
 				float restoreManaVal = restoreMsg.restoreManaVal;
 				if (restoreManaVal <= 0f)
 					return;
 				float overflowManaVal = restoreManaVal + __instance.MP - __instance.MaxMP;
 				if (overflowManaVal <= 0f)
 					return;
-				if (pl.PlBuffCtrl.isActive(OcPlBuff.MagicShield) && __instance.MP_Rate >= 1f - float.Epsilon)
+				OcPl pl = (OcPl)Traverse.Create(__instance).Field("_Pl").GetValue();
+				if (pl.PlBuffCtrl.isActive(OcPlBuff.MagicShield))
 				{
 					float _CurrShieldDurability = (float)Traverse.Create(__instance).Field("_CurrShieldDurability").GetValue();
 					float _MaxShieldDurability = (float)Traverse.Create(__instance).Field("_MaxShieldDurability").GetValue();
