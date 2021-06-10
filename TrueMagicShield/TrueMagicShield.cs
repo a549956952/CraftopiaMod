@@ -37,12 +37,17 @@ namespace TrueMagicShield
 			public static void Prefix(OcHealthPl __instance, OcRestoreMsg restoreMsg)
 			{
 				OcPl pl = (OcPl)Traverse.Create(__instance).Field("_Pl").GetValue();
-				if (pl.PlBuffCtrl.isActive(OcPlBuff.MagicShield) && __instance.MP_Rate >= 1f - float.Epsilon && restoreMsg.restoreManaVal > 0f)
+				float restoreManaVal = restoreMsg.restoreManaVal;
+				if (restoreManaVal <= 0f)
+					return;
+				float overflowManaVal = restoreManaVal + __instance.MP - __instance.MaxMP;
+				if (overflowManaVal <= 0f)
+					return;
+				if (pl.PlBuffCtrl.isActive(OcPlBuff.MagicShield) && __instance.MP_Rate >= 1f - float.Epsilon)
 				{
 					float _CurrShieldDurability = (float)Traverse.Create(__instance).Field("_CurrShieldDurability").GetValue();
 					float _MaxShieldDurability = (float)Traverse.Create(__instance).Field("_MaxShieldDurability").GetValue();
-					float restoreManaVal = restoreMsg.restoreManaVal;
-					__instance.ChangeShieldDurability(Math.Min((pl.SkillCtrl.MagicShield_ShieldRate * restoreManaVal) / pl.SkillCtrl.calcConsumeManaRate(), _MaxShieldDurability - _CurrShieldDurability));
+					__instance.ChangeShieldDurability(Math.Min((pl.SkillCtrl.MagicShield_ShieldRate * overflowManaVal) / pl.SkillCtrl.calcConsumeManaRate(), _MaxShieldDurability - _CurrShieldDurability));
 				}
 			}
 		}
