@@ -31,21 +31,18 @@ namespace TrueMagicShield
 			}
 		}
 
-		[HarmonyPatch(typeof(OcPlSkillCtrl), "move")]
-		public class move_Patch
+		[HarmonyPatch(typeof(OcHealthPl), "solveRestoreMsg")]
+		public class solveRestoreMsg_Patch
 		{
-			public static void Prefix(OcPlSkillCtrl __instance)
+			public static void Prefix(OcHealthPl __instance, OcRestoreMsg restoreMsg)
 			{
 				OcPl pl = (OcPl)Traverse.Create(__instance).Field("_Pl").GetValue();
-				OcHealthPl Health = pl.HealthPl;
-				float _SkillPassive_GenMP_Timer = (float)Traverse.Create(__instance).Field("_SkillPassive_GenMP_Timer").GetValue();
-				if (pl.PlBuffCtrl.isActive(OcPlBuff.MagicShield) && Health.MP_Rate >= 1f - float.Epsilon && _SkillPassive_GenMP_Timer - Time.deltaTime < 0f)
+				if (pl.PlBuffCtrl.isActive(OcPlBuff.MagicShield) && __instance.MP_Rate >= 1f - float.Epsilon && restoreMsg.restoreManaVal > 0f)
 				{
-					float _CurrShieldDurability = (float)Traverse.Create(Health).Field("_CurrShieldDurability").GetValue();
-					float _MaxShieldDurability = (float)Traverse.Create(Health).Field("_MaxShieldDurability").GetValue();
-					float restoreManaVal = pl.SkillCtrl.GenMP_Regen * pl.SkillCtrl.MPRegeneration_Rate * pl.PlStatusCtrl.getFinalParam(PlParam.ManaRegenerateRate);
-					pl.PlStatusCtrl.getFinalParam(PlParam.ManaConsumeRate);
-					Health.ChangeShieldDurability(Math.Min((pl.SkillCtrl.MagicShield_ShieldRate * restoreManaVal) / pl.SkillCtrl.calcConsumeManaRate(), _MaxShieldDurability - _CurrShieldDurability));
+					float _CurrShieldDurability = (float)Traverse.Create(__instance).Field("_CurrShieldDurability").GetValue();
+					float _MaxShieldDurability = (float)Traverse.Create(__instance).Field("_MaxShieldDurability").GetValue();
+					float restoreManaVal = restoreMsg.restoreManaVal;
+					__instance.ChangeShieldDurability(Math.Min((pl.SkillCtrl.MagicShield_ShieldRate * restoreManaVal) / pl.SkillCtrl.calcConsumeManaRate(), _MaxShieldDurability - _CurrShieldDurability));
 				}
 			}
 		}

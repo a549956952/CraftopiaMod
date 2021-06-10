@@ -37,6 +37,7 @@
   <ItemGroup>
     <Reference Include="0Harmony20">
       <HintPath>E:\SteamLibrary\steamapps\common\Craftopia\BepInEx\core\0Harmony20.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="AD__Overcraft">
       <HintPath>E:\SteamLibrary\steamapps\common\Craftopia\Craftopia_Data\Managed\AD__Overcraft.dll</HintPath>
